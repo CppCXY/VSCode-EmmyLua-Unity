@@ -9,7 +9,7 @@ const LANGUAGE_ID = 'lua';
 let DEBUG_MODE = true;
 
 interface EmmyLuaExtension {
-	reportAPIDoc: (docs: any[])=>void
+	reportAPIDoc: (docs: any)=>void
 }
 
 
@@ -131,7 +131,9 @@ async function startServer() {
 		unityApiDocs.push(request)
 	})
 	client.onNotification("api/finish", () => {
-		emmyluaApi?.reportAPIDoc(unityApiDocs);
+		emmyluaApi?.reportAPIDoc({
+			classes: unityApiDocs
+		});
 		unityApiDocs = [];
 	})
 }
