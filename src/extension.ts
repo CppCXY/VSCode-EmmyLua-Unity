@@ -8,14 +8,20 @@ import * as net from "net";
 const LANGUAGE_ID = 'lua';
 let DEBUG_MODE = true;
 
+interface EmmyLuaExtension {
+	reportAPIDoc: (docs: any[])=>void
+}
+
+
 let client: LanguageClient;
 let saveContext: vscode.ExtensionContext;
+let emmyluaApi: EmmyLuaExtension;
+let unityApiDocs: any[] = [];
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	DEBUG_MODE = process.env['EMMY_DEV'] === "true";
+	DEBUG_MODE = process.env['EMMY_UNITY_DEV'] === "true";
 	saveContext = context;
-
 	startServer();
 }
 
@@ -32,6 +38,12 @@ async function detectCsharpProject() {
 }
 
 async function startServer() {
+	const emmylua = vscode.extensions.getExtension("tangzx.emmylua")
+	if (!emmylua) {
+		return
+	}
+	emmyluaApi = await emmylua.activate();
+
 	const sln = await detectCsharpProject();
 	if (!sln) {
 		return;
@@ -112,5 +124,14 @@ async function startServer() {
 	client.start().then(() => {
 		console.log("client ready");
 	});
-
+	client.onNotification("api/begin", () => {
+		unityApiDocs = [];
+	})
+	client.onNotification("api/add", (request) => {
+		unityApiDocs.push(request)
+	})
+	client.onNotification("api/finish", () => {
+		emmyluaApi?.reportAPIDoc(unityApiDocs);
+		unityApiDocs = [];
+	})
 }
