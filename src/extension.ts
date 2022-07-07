@@ -4,6 +4,7 @@ import * as path from "path";
 import * as vscode from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, StreamInfo } from "vscode-languageclient/node";
 import * as net from "net";
+import * as os from "os";
 
 const LANGUAGE_ID = 'lua';
 let DEBUG_MODE = true;
@@ -93,44 +94,39 @@ async function startServer() {
 			return Promise.resolve(result);
 		};
 	} else {
-		// let platform: string = os.platform();
+		let platform: string = os.platform();
 
-		// let command: string = "";
-		// switch (platform) {
-		// 	case "win32":
-		// 		command = path.join(
-		// 			saveContext.extensionPath,
-		// 			'server',
-		// 			'bin',
-		// 			'CodeFormatServer.exe'
-		// 		)
-		// 		break;
-		// 	case "linux":
-		// 		command = path.join(
-		// 			saveContext.extensionPath,
-		// 			'server',
-		// 			'bin',
-		// 			'CodeFormatServer'
-		// 		)
-		// 		fs.chmodSync(command, '777');
-		// 		break;
-		// 	case "darwin":
-		// 		command = path.join(
-		// 			saveContext.extensionPath,
-		// 			'server',
-		// 			'bin',
-		// 			'CodeFormatServer'
-		// 		)
-		// 		fs.chmodSync(command, '777');
-		// 		break;
-		// }
+		let command: string = "";
+		switch (platform) {
+			case "win32":
+				command = path.join(
+					saveContext.extensionPath,
+					'server',
+					'unity.exe'
+				)
+				break;
+			case "linux":
+				command = path.join(
+					saveContext.extensionPath,
+					'server',
+					'unity'
+				)
+				break;
+			case "darwin":
+				command = path.join(
+					saveContext.extensionPath,
+					'server',
+					'unity'
+				)
+				break;
+		}
 		serverOptions = {
-			command: "",
+			command,
 			args: []
 		};
 	}
 
-	client = new LanguageClient(LANGUAGE_ID, "EmmyLuaCodeStyle plugin for vscode.", serverOptions, clientOptions);
+	client = new LanguageClient(LANGUAGE_ID, "EmmyLuaUnity plugin for vscode.", serverOptions, clientOptions);
 	client.start().then(() => {
 		console.log("client ready");
 	});
