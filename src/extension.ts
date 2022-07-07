@@ -22,6 +22,13 @@ let unityApiDocs: any[] = [];
 export function activate(context: vscode.ExtensionContext) {
 	DEBUG_MODE = process.env['EMMY_UNITY_DEV'] === "true";
 	saveContext = context;
+	context.subscriptions.push(vscode.commands.registerCommand('emmylua.unity.pull', () => {
+		const exportNamespace = vscode.workspace.getConfiguration().get<string[]>("emmylua.unity.namespace");
+		client?.sendNotification("api/pull", {
+			export: exportNamespace
+		})
+	}));
+
 	startServer();
 }
 
@@ -49,6 +56,8 @@ async function startServer() {
 		return;
 	}
 
+	const exportNamespace = vscode.workspace.getConfiguration().get<string[]>("emmylua.unity.namespace");
+
 	const clientOptions: LanguageClientOptions = {
 		documentSelector: [{ scheme: 'file', language: LANGUAGE_ID }],
 		synchronize: {
@@ -60,7 +69,8 @@ async function startServer() {
 		initializationOptions: {
 			workspaceFolders: vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.map(f => f.uri.toString()) : null,
 			client: 'vsc',
-			sln: sln?.fsPath
+			sln: sln?.fsPath,
+			export: exportNamespace
 		}
 	};
 

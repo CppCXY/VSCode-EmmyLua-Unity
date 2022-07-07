@@ -22,6 +22,38 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"commands": [
+			{
+				"command": "emmylua.unity.pull",
+				"title": "pull unity api"
+			}
+		],
+		"menus": {
+            "explorer/context": [{
+                    "command": "emmylua.unity.pull"
+                }
+            ]
+        },
+		"configuration": {
+			"title": "EmmyLuaUnity",
+			"properties": {
+				"emmylua.unity.namespace": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"default": [
+						"UnityEngine"
+					],
+					"description": "导出unityapi所在的命名空间"
+				},
+				"emmylua.unity.targetPlugin": {
+					"type": "string",
+					"default": "emmylua",
+					"description": "目标插件，目前仅支持emmylua"
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",

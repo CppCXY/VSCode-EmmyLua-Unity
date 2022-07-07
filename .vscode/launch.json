@@ -17,7 +17,8 @@
 				"${workspaceFolder}/out/**/*.js"
 			],
 			"env": {
-                "EMMY_DEV": "true"
+                "EMMY_UNITY_DEV": "true",
+				"EMMY_DEV": "true"
             },
 			"preLaunchTask": "${defaultBuildTask}"
 		},
