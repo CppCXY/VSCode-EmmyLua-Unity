@@ -24,10 +24,8 @@
 
 如果有任何问题可以去 [vscode-emmylua-unity](https://github.com/CppCXY/VSCode-EmmyLua-Unity)
 
-## 支持的主插件
+## 支持的lua插件
 
-vscode-emmylua 0.5.4以上版本支持
+vscode-emmylua 支持
 
 intellij-emmylua 尚未支持
-
-sumneko_lua 尚未支持
