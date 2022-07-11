@@ -66,6 +66,11 @@
                         "xlua",
 						"tolua"
                     ]
+				},
+				"emmylua.unity.sln": {
+					"type": "string",
+					"default": "",
+					"description": "当配置该选项时，插件一定会打开该unity工程然后注入到主插件中"
 				}
 			}
 		}

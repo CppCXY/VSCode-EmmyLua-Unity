@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, StreamInfo } from "vscode-languageclient/node";
 import * as net from "net";
 import * as os from "os";
+import * as fs from "fs"
 
 const LANGUAGE_ID = 'lua';
 let DEBUG_MODE = true;
@@ -12,7 +13,6 @@ let DEBUG_MODE = true;
 interface EmmyLuaExtension {
 	reportAPIDoc: (docs: any) => void
 }
-
 
 let client: LanguageClient;
 let saveContext: vscode.ExtensionContext;
@@ -38,23 +38,48 @@ export function deactivate() {
 }
 
 async function detectCsharpProject() {
+	const slnPath = vscode.workspace.getConfiguration().get<string>("emmylua.unity.sln");
+	if(slnPath && slnPath.length !== 0){
+		if(fs.existsSync(slnPath)){
+			return slnPath;
+		}
+	}
+
 	const cshapSln = await vscode.workspace.findFiles("*.sln");
 	if (cshapSln.length === 0) {
 		return null;
 	}
-	return cshapSln[0];
+	return cshapSln[0]?.fsPath;
 }
 
 async function startServer() {
-	const emmylua = vscode.extensions.getExtension("tangzx.emmylua");
+	const target = vscode.workspace.getConfiguration().get<string>("emmylua.unity.targetPlugin");
+	let targetIdentify = "tangzx.emmylua"
+	if (target === "emmylua") {
+		targetIdentify = "tangzx.emmylua"
+	}
+	else if (target === "sumneko_lua") {
+		targetIdentify = "sumneko.lua"
+	}
+
+	const emmylua = vscode.extensions.getExtension(targetIdentify);
 	if (!emmylua) {
 		return;
 	}
 	emmyluaApi = await emmylua.activate();
 
-	const sln = await detectCsharpProject();
+	let sln = await detectCsharpProject();
 	if (!sln) {
 		return;
+	}
+
+	let root = "CS";
+	const framework = vscode.workspace.getConfiguration().get<string>("emmylua.unity.framework");
+	if(framework === "xlua"){
+		root = "CS";
+	}
+	else if(framework === "tolua"){
+		root = "";
 	}
 
 	const exportNamespace = vscode.workspace.getConfiguration().get<string[]>("emmylua.unity.namespace");
@@ -70,7 +95,7 @@ async function startServer() {
 		initializationOptions: {
 			workspaceFolders: vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.map(f => f.uri.toString()) : null,
 			client: 'vsc',
-			sln: sln?.fsPath,
+			sln,
 			export: exportNamespace
 		}
 	};
@@ -139,7 +164,7 @@ async function startServer() {
 	client.onNotification("api/finish", () => {
 		emmyluaApi?.reportAPIDoc({
 			classes: unityApiDocs,
-			root: "CS"
+			root
 		});
 		unityApiDocs = [];
 	});
