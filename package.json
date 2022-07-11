@@ -49,8 +49,23 @@
 				},
 				"emmylua.unity.targetPlugin": {
 					"type": "string",
-					"default": "emmylua",
-					"description": "目标插件，目前仅支持emmylua"
+                    "enum": ["emmylua", "sumneko_lua"],
+                    "default": "emmylua",
+                    "description": "主要lua插件",
+                    "enumDescriptions": [
+                        "emmylua 插件是该插件的主要支持插件",
+						"sumneko_lua 暂未支持"
+                    ]
+				},
+				"emmylua.unity.framework": {
+					"type": "string",
+                    "enum": ["xlua", "tolua"],
+                    "default": "xlua",
+                    "description": "宿主lua框架",
+                    "enumDescriptions": [
+                        "xlua",
+						"tolua"
+                    ]
 				}
 			}
 		}
