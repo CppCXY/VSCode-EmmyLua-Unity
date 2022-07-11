@@ -14,28 +14,19 @@ async function downloadTo(url, path) {
 
 async function downloadDepends() {
     await Promise.all([        
-        downloadTo(`${config.lanServerUrl}/${config.lanServerVersion}/${args[2]}.zip`, 'temp/CodeFormat.zip'),
+        downloadTo(`${config.lanServerUrl}/${config.lanServerVersion}/${args[2]}.zip`, 'temp/unity.zip'),
     ]);
 }
 
 async function build() {
     if (!fs.existsSync('temp')) {
-        fs.mkdirSync('temp')
+        fs.mkdirSync('temp');
     }
     
     await downloadDepends();
     
-    await decompress('temp/CodeFormat.zip', 'temp/server');
+    await decompress('temp/unity.zip', 'temp/server');
 
-    // await fc('temp/server','server',  { mkdirp: true });
-    // // mac
-    // await fc('temp/server/macOS/bin/CodeFormatServer', 'server/macOS/bin/CodeFormatServer', { mkdirp: true });
-
-    // // linux
-    // await fc('temp/server/Linux/bin/CodeFormatServer', 'server/Linux/bin/CodeFormatServer', { mkdirp: true });
-
-    // // win
-    // await fc('temp/server/Windows/bin/CodeFormatServer.exe', 'server/Linux/bin/CodeFormatServer.exe', { mkdirp: true });
 }
 
 build().catch(console.error);

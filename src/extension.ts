@@ -10,7 +10,7 @@ const LANGUAGE_ID = 'lua';
 let DEBUG_MODE = true;
 
 interface EmmyLuaExtension {
-	reportAPIDoc: (docs: any)=>void
+	reportAPIDoc: (docs: any) => void
 }
 
 
@@ -46,9 +46,9 @@ async function detectCsharpProject() {
 }
 
 async function startServer() {
-	const emmylua = vscode.extensions.getExtension("tangzx.emmylua")
+	const emmylua = vscode.extensions.getExtension("tangzx.emmylua");
 	if (!emmylua) {
-		return
+		return;
 	}
 	emmyluaApi = await emmylua.activate();
 
@@ -103,21 +103,21 @@ async function startServer() {
 					saveContext.extensionPath,
 					'server',
 					'unity.exe'
-				)
+				);
 				break;
 			case "linux":
 				command = path.join(
 					saveContext.extensionPath,
 					'server',
 					'unity'
-				)
+				);
 				break;
 			case "darwin":
 				command = path.join(
 					saveContext.extensionPath,
 					'server',
 					'unity'
-				)
+				);
 				break;
 		}
 		serverOptions = {
@@ -132,14 +132,15 @@ async function startServer() {
 	});
 	client.onNotification("api/begin", () => {
 		unityApiDocs = [];
-	})
+	});
 	client.onNotification("api/add", (request) => {
-		unityApiDocs.push(request)
-	})
+		unityApiDocs.push(request);
+	});
 	client.onNotification("api/finish", () => {
 		emmyluaApi?.reportAPIDoc({
-			classes: unityApiDocs
+			classes: unityApiDocs,
+			root: "CS"
 		});
 		unityApiDocs = [];
-	})
+	});
 }
