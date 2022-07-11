@@ -13,7 +13,7 @@
 	"engines": {
 		"vscode": "^1.68.0"
 	},
-	"repository": "https://github.com/CppCXY/EmmyLuaUnity",
+	"repository": "https://github.com/CppCXY/VSCode-EmmyLua-Unity",
 	"categories": [
 		"Programming Languages"
 	],
