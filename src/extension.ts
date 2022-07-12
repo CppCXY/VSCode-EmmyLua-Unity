@@ -39,8 +39,8 @@ export function deactivate() {
 
 async function detectCsharpProject() {
 	const slnPath = vscode.workspace.getConfiguration().get<string>("emmylua.unity.sln");
-	if(slnPath && slnPath.length !== 0){
-		if(fs.existsSync(slnPath)){
+	if (slnPath && slnPath.length !== 0) {
+		if (fs.existsSync(slnPath)) {
 			return slnPath;
 		}
 	}
@@ -75,10 +75,10 @@ async function startServer() {
 
 	let root = "CS";
 	const framework = vscode.workspace.getConfiguration().get<string>("emmylua.unity.framework");
-	if(framework === "xlua"){
+	if (framework === "xlua") {
 		root = "CS";
 	}
-	else if(framework === "tolua"){
+	else if (framework === "tolua") {
 		root = "";
 	}
 
@@ -166,6 +166,7 @@ async function startServer() {
 			classes: unityApiDocs,
 			root
 		});
+
 		unityApiDocs = [];
 	});
 }

@@ -7,7 +7,7 @@
 		"emmylua",
 		"unity"
 	],
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"author": "CppCXY",
 	"publisher": "CppCXY",
 	"engines": {
@@ -54,7 +54,7 @@
                     "description": "主要lua插件",
                     "enumDescriptions": [
                         "emmylua 插件是该插件的主要支持插件",
-						"sumneko_lua 暂未支持"
+						"sumneko_lua 正在支持中..."
                     ]
 				},
 				"emmylua.unity.framework": {
