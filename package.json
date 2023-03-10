@@ -7,7 +7,7 @@
 		"emmylua",
 		"unity"
 	],
-	"version": "1.0.6",
+	"version": "1.2.0",
 	"author": "CppCXY",
 	"publisher": "CppCXY",
 	"engines": {
@@ -53,8 +53,8 @@
                     "default": "emmylua",
                     "description": "主要lua插件",
                     "enumDescriptions": [
-                        "emmylua 插件是该插件的主要支持插件",
-						"sumneko_lua 正在支持中..."
+                        "emmylua 0.5.5以上支持",
+						"sumneko_lua 3.5.0以上支持"
                     ]
 				},
 				"emmylua.unity.framework": {
@@ -71,6 +71,11 @@
 					"type": "string",
 					"default": "",
 					"description": "当配置该选项时，插件一定会打开该unity工程然后注入到主插件中"
+				},
+				"emmylua.unity.msbuild_properties": {
+					"type": "object",
+					"default": {},
+					"description": "设置给msbuild的参数"
 				}
 			}
 		}

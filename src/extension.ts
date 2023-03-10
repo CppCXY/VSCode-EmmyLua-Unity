@@ -24,10 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 	DEBUG_MODE = process.env['EMMY_UNITY_DEV'] === "true";
 	saveContext = context;
 	context.subscriptions.push(vscode.commands.registerCommand('emmylua.unity.pull', () => {
-		const exportNamespace = vscode.workspace.getConfiguration().get<string[]>("emmylua.unity.namespace");
-		client?.sendNotification("api/pull", {
-			export: exportNamespace
-		})
+		pullUnityApi()
 	}));
 
 	startServer();
@@ -37,9 +34,35 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
 }
 
+async function pullUnityApi() {
+	const config = vscode.workspace.getConfiguration();
+	const exportNamespace = config.get<string[]>("emmylua.unity.namespace");
+	const properties = config.get<any>("emmylua.unity.msbuild_properties");
+	const slnPath = await detectCsharpProject();
+	client?.sendNotification("api/pull", {
+		export: exportNamespace,
+		slnPath,
+		properties
+	})
+}
+
 async function detectCsharpProject() {
-	const slnPath = vscode.workspace.getConfiguration().get<string>("emmylua.unity.sln");
+	if (!vscode.workspace.workspaceFolders) {
+		return null;
+	}
+
+	const workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+	let slnPath = vscode.workspace.getConfiguration().get<string>("emmylua.unity.sln");
 	if (slnPath && slnPath.length !== 0) {
+		if (!path.isAbsolute(slnPath)) {
+			if (slnPath.startsWith(".")) {
+				slnPath = path.join(workspacePath, slnPath);
+			}
+			else if (slnPath.includes("${workspaceFolder}")) {
+				slnPath = slnPath.replace("${workspaceFolder}", workspacePath);
+			}
+		}
+
 		if (fs.existsSync(slnPath)) {
 			return slnPath;
 		}
@@ -82,29 +105,15 @@ async function startServer() {
 		root = "";
 	}
 
-	const exportNamespace = vscode.workspace.getConfiguration().get<string[]>("emmylua.unity.namespace");
-
 	const clientOptions: LanguageClientOptions = {
-		documentSelector: [{ scheme: 'file', language: LANGUAGE_ID }],
-		synchronize: {
-			configurationSection: ["emmylua.unity", "files.associations"],
-			fileEvents: [
-				vscode.workspace.createFileSystemWatcher("**/*.cs")
-			]
-		},
-		initializationOptions: {
-			workspaceFolders: vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.map(f => f.uri.toString()) : null,
-			client: 'vsc',
-			sln,
-			export: exportNamespace
-		}
+		documentSelector: [{ scheme: 'file', language: LANGUAGE_ID }]
 	};
 
 	let serverOptions: ServerOptions;
 	if (DEBUG_MODE) {
 		// The server is a started as a separate app and listens on port 5008
 		const connectionInfo = {
-			port: 5009,
+			port: 5008,
 		};
 		serverOptions = () => {
 			// Connect to language server via socket
@@ -153,7 +162,7 @@ async function startServer() {
 
 	client = new LanguageClient(LANGUAGE_ID, "EmmyLuaUnity plugin for vscode.", serverOptions, clientOptions);
 	client.start().then(() => {
-		console.log("client ready");
+		pullUnityApi();
 	});
 	client.onNotification("api/begin", () => {
 		unityApiDocs = [];

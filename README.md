@@ -18,7 +18,7 @@
 
 ## 依赖
 
-该插件基于`MSBUILD`，要求所在操作系统拥有`visual studio 2017` 以上
+该插件基于`dotnet MSBUILD`，要求所在操作系统拥有`dotnet sdk`
 
 ## 问题
 
@@ -28,4 +28,4 @@
 
 vscode-emmylua 支持
 
-intellij-emmylua 尚未支持
+intellij-emmylua 支持
