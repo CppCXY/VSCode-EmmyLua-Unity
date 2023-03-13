@@ -1,8 +1,12 @@
 # Change Log
 
+## 1.2.3
+
+`FIX` 降低msbuild.locator版本
+
 ## 1.2.2
 
-`NEW` 修复插件不可用的问题
+`FIX` 修复插件不可用的问题
 
 ## 1.2.0
 
