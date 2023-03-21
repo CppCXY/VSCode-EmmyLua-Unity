@@ -18,7 +18,6 @@
 			],
 			"env": {
                 "EMMY_UNITY_DEV": "true",
-				// "EMMY_DEV": "true"
             },
 			"preLaunchTask": "${defaultBuildTask}"
 		},
