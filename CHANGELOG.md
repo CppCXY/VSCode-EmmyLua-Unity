@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.2.5
+
+`FIX` 修复描述关于msbuild的需求描述, 要求最低dotnet sdk7
+
+`NEW` 提升命令行的可用性
+
+
 ## 1.2.4
 
 `FIX` 修复插件过多报错的问题

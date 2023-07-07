@@ -18,7 +18,7 @@
 
 ## 依赖
 
-该插件基于`dotnet MSBUILD`，要求所在操作系统拥有`dotnet sdk`
+该插件基于`dotnet sdk 7 MSBUILD`，要求所在操作系统拥有`dotnet sdk 7`
 
 ## 问题
 
