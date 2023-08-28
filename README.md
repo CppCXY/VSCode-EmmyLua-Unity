@@ -28,4 +28,6 @@
 
 vscode-emmylua 支持
 
-intellij-emmylua 支持
+sumneko-lua 支持
+
+intellij-emmylua 支持 (https://github.com/CppCXY/EmmyLua-Unity2)

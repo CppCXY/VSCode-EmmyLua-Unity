@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.3.1
+
+`NEW` 清理错误的补全项`<global namespace>`, 重写导出的部分代码
+
+`NEW` 如果有什么Feature Request可以去 https://github.com/CppCXY/EmmyLua-Unity-LS 提交
+
 ## 1.2.5
 
 `FIX` 修复描述关于msbuild的需求描述, 要求最低dotnet sdk7

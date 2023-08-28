@@ -16,7 +16,7 @@ Supports manual update of unity api. Right-click on the left workspace panel and
 
 ## dependencies
 
-The plug-in is based on `MSBUILD` and requires the operating system to have `visual studio 2017` or above
+The plug-in is based on `DOTNET SDK 7`
 
 ## question
 
@@ -24,8 +24,8 @@ If you have any questions you can go to [vscode-emmylua-unity](https://github.co
 
 ## Supported main plugins
 
-vscode-emmmylua version 0.5.4 and above is supported
+vscode-emmmylua 
 
-intellij-emmmylua is not yet supported
+intellij-emmmylua 
 
-sumneko_lua is not yet supported
+sumneko_lua 
