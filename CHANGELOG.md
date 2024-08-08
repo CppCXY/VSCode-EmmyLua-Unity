@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.0.1
+
+`FIX` 修复没有导出属性的BUG
+
 ## 2.0.0
 
 `NEW` 重写该插件, 支持最新的vscode-emmylua
