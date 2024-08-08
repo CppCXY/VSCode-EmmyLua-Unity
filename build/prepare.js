@@ -23,7 +23,7 @@ async function build() {
         fs.mkdirSync('temp');
     }
     
-    // await downloadDepends();
+    await downloadDepends();
     
     await decompress('temp/unity.zip', 'cli');
 }
