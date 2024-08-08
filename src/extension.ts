@@ -2,22 +2,13 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as path from "path";
 import * as vscode from 'vscode';
-import { LanguageClient, LanguageClientOptions, ServerOptions, StreamInfo } from "vscode-languageclient/node";
-import * as net from "net";
 import * as os from "os";
 import * as fs from "fs"
 
 const LANGUAGE_ID = 'lua';
 let DEBUG_MODE = true;
-
-interface EmmyLuaExtension {
-	reportAPIDoc: (docs: any) => void
-}
-
-let client: LanguageClient;
 let saveContext: vscode.ExtensionContext;
-let emmyluaApi: EmmyLuaExtension;
-let unityApiDocs: any[] = [];
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -26,8 +17,6 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('emmylua.unity.pull', () => {
 		pullUnityApi()
 	}));
-
-	startServer();
 }
 
 // this method is called when your extension is deactivated
@@ -36,35 +25,67 @@ export function deactivate() {
 
 async function pullUnityApi() {
 	const config = vscode.workspace.getConfiguration();
-	const exportNamespace = config.get<string[]>("emmylua.unity.namespace");
+	const slnPath = await findSlnProject();
+	if (!slnPath) {
+		vscode.window.showErrorMessage("Can't find unity project");
+		return;
+	}
+	let framework = config.get<string>("emmylua.unity.framework");
+	if (!framework) {
+		framework = "XLua";
+	}
+
 	const properties = config.get<any>("emmylua.unity.msbuild_properties");
-	const slnPath = await detectCsharpProject();
-	client?.sendNotification("api/pull", {
-		export: exportNamespace,
-		slnPath,
-		properties
-	})
+	let outputDir = config.get<string>("emmylua.unity.output_dir");
+	if (!outputDir) {
+		outputDir = ".EmmyLuaUnity"
+	}
+
+	let exePath = await getCliExePath();
+	let args = ["-s", `"${slnPath}"`, "-o", `${outputDir}`, "-b", framework, "-n", "UnityEngine"];
+	if (properties) {
+		let first = true;
+		for (let key in properties) {
+			if (first) {
+				args.push("-p");
+				first = false;
+			}
+			args.push(`${key}=${properties[key]}`);
+		}
+	}
+
+	const terminalName = "EmmyLua.Unity";
+	let cli = vscode.window.terminals.find(t => t.name === terminalName);
+
+	if (!cli) {
+		cli = vscode.window.createTerminal(terminalName);
+	}
+
+	cli.show();
+	cli.sendText(`${exePath} ${args.join(" ")}`);
+	 
+	vscode.window.showInformationMessage("Pulling unity api, please wait...");
 }
 
-async function detectCsharpProject() {
+async function findSlnProject() {
 	if (!vscode.workspace.workspaceFolders) {
 		return null;
 	}
 
 	const workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-	let slnPath = vscode.workspace.getConfiguration().get<string>("emmylua.unity.sln");
-	if (slnPath && slnPath.length !== 0) {
-		if (!path.isAbsolute(slnPath)) {
-			if (slnPath.startsWith(".")) {
-				slnPath = path.join(workspacePath, slnPath);
+	let configSln = vscode.workspace.getConfiguration().get<string>("emmylua.unity.project_workspace");
+	if (configSln && configSln.length !== 0 && configSln.endsWith(".sln")) {
+		if (!path.isAbsolute(configSln)) {
+			if (configSln.startsWith(".")) {
+				configSln = path.join(workspacePath, configSln);
 			}
-			else if (slnPath.includes("${workspaceFolder}")) {
-				slnPath = slnPath.replace("${workspaceFolder}", workspacePath);
+			else if (configSln.includes("${workspaceFolder}")) {
+				configSln = configSln.replace("${workspaceFolder}", workspacePath);
 			}
 		}
-
-		if (fs.existsSync(slnPath)) {
-			return slnPath;
+		let absPath = path.resolve(configSln);
+		if (fs.existsSync(absPath)) {
+			return absPath;
 		}
 	}
 
@@ -75,107 +96,25 @@ async function detectCsharpProject() {
 	return cshapSln[0]?.fsPath;
 }
 
-async function startServer() {
-	const target = vscode.workspace.getConfiguration().get<string>("emmylua.unity.targetPlugin");
-	let targetIdentify = "tangzx.emmylua"
-	if (target === "emmylua") {
-		targetIdentify = "tangzx.emmylua"
+async function getCliExePath() {
+	const cliPath = path.join(saveContext.extensionPath, "cli");
+	let platform = os.platform();
+	let cliExe = "";
+	if (platform === "win32") {
+		return path.join(cliPath, "win32-x64/EmmyLua.Unity.Cli.exe");
 	}
-	else if (target === "sumneko_lua") {
-		targetIdentify = "sumneko.lua"
-	}
-
-	const emmylua = vscode.extensions.getExtension(targetIdentify);
-	if (!emmylua) {
-		return;
-	}
-	emmyluaApi = await emmylua.activate();
-
-	let sln = await detectCsharpProject();
-	if (!sln) {
-		return;
-	}
-
-	let root = "CS";
-	const framework = vscode.workspace.getConfiguration().get<string>("emmylua.unity.framework");
-	if (framework === "xlua") {
-		root = "CS";
-	}
-	else if (framework === "tolua") {
-		root = "";
-	}
-
-	const clientOptions: LanguageClientOptions = {
-		documentSelector: [{ scheme: 'file', language: LANGUAGE_ID }]
-	};
-
-	let serverOptions: ServerOptions;
-	if (DEBUG_MODE) {
-		// The server is a started as a separate app and listens on port 5008
-		const connectionInfo = {
-			port: 5008,
-		};
-		serverOptions = () => {
-			// Connect to language server via socket
-			let socket = net.connect(connectionInfo);
-			let result: StreamInfo = {
-				writer: socket,
-				reader: socket as NodeJS.ReadableStream
-			};
-			socket.on("close", () => {
-				console.log("client connect error!");
-			});
-			return Promise.resolve(result);
-		};
-	} else {
-		let platform: string = os.platform();
-
-		let command: string = "";
-		switch (platform) {
-			case "win32":
-				command = path.join(
-					saveContext.extensionPath,
-					'server',
-					'unity.exe'
-				);
-				break;
-			case "linux":
-				command = path.join(
-					saveContext.extensionPath,
-					'server',
-					'unity'
-				);
-				break;
-			case "darwin":
-				command = path.join(
-					saveContext.extensionPath,
-					'server',
-					'unity'
-				);
-				break;
+	else if (platform === "darwin") {
+		if (os.arch() === "arm64") {
+			cliExe = path.join(cliPath, "darwin-arm64/EmmyLua.Unity.Cli");
 		}
-		serverOptions = {
-			command,
-			args: []
-		};
+		else {
+			cliExe = path.join(cliPath, "darwin-x64/EmmyLua.Unity.Cli");
+		}
+	}
+	else if (platform === "linux") {
+		cliExe = path.join(cliPath, "linux-x64/EmmyLua.Unity.Cli");
 	}
 
-	client = new LanguageClient(LANGUAGE_ID, "EmmyLuaUnity plugin for vscode.", serverOptions, clientOptions);
-	client.start().then(() => {
-		pullUnityApi();
-	});
-	client.onNotification("api/begin", () => {
-		unityApiDocs = [];
-	});
-	client.onNotification("api/add", (request) => {
-		unityApiDocs.push(request);
-	});
-	client.onNotification("api/finish", () => {
-		emmyluaApi?.reportAPIDoc({
-			classes: unityApiDocs,
-			root
-		});
-
-		unityApiDocs = [];
-	});
+	fs.chmodSync(cliExe, '777');
+	return cliExe;
 }

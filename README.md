@@ -4,21 +4,20 @@
 
 ## 介绍
 
-该插件是通过分析unity工程获取的C#代码提示。
+该插件是通过分析unity工程导出API获取的C#代码提示。
 
-与前代EmmyLua-Unity(并未上传到任何商店)插件相比，不需要打开Unity编辑器，也不会生成一大堆lua api文件。
-
-该插件除了能让主插件提示unity api，还能提示出每一个C# api的方法/属性/类/事件的注释，还支持从lua代码跳转到C#定义处。
+目前支持的框架:
+- xlua
 
 ## 使用方式
 
-以unity工程为根目录打开工作区，等主插件初始化完毕之后该插件会自动将unity api注入主插件中。
+以unity工程为根目录打开工作区，或者打开任意工作区, 通过用户配置指定unity工程所在目录, 然后写好输出目录.
 
-支持手动更新unity api，在左侧工作区面板上单击右键会出现`pull unity api`, 点击之后等待一段时间api就更新完了。
+在左侧工作区面板上单击右键会出现`pull unity api`, 点击之后等待一段时间api就导出完了。
 
 ## 依赖
 
-该插件基于`dotnet sdk 7 MSBUILD`，要求所在操作系统拥有`dotnet sdk 7`
+该插件并非是`self-contain`编译, 而且必须依赖目标电脑上和本插件编译时一样版本的MSBUILD, 所以请确保电脑上拥有`dotnet sdk 8`
 
 ## 问题
 
@@ -28,6 +27,6 @@
 
 vscode-emmylua 支持
 
-sumneko-lua 支持
+由于其他插件对相关语法支持不到位, 所以不支持其他插件
 
-intellij-emmylua 支持 (https://github.com/CppCXY/EmmyLua-Unity2)
+[TODO] intellij-emmylua 支持 (https://github.com/CppCXY/EmmyLua-Unity2)

@@ -1,17 +1,17 @@
 {
 	"name": "emmylua-unity",
 	"displayName": "EmmyLuaUnity",
-	"description": "make lua get unity api",
+	"description": "make emmylua get unity api",
 	"keywords": [
 		"lua",
 		"emmylua",
 		"unity"
 	],
-	"version": "1.3.1",
+	"version": "2.0.0",
 	"author": "CppCXY",
 	"publisher": "CppCXY",
 	"engines": {
-		"vscode": "^1.68.0"
+		"vscode": "^1.89.0"
 	},
 	"repository": "https://github.com/CppCXY/VSCode-EmmyLua-Unity",
 	"categories": [
@@ -29,48 +29,35 @@
 			}
 		],
 		"menus": {
-            "explorer/context": [{
-                    "command": "emmylua.unity.pull"
-                }
-            ]
-        },
+			"explorer/context": [
+				{
+					"command": "emmylua.unity.pull"
+				}
+			]
+		},
 		"configuration": {
 			"title": "EmmyLuaUnity",
 			"properties": {
-				"emmylua.unity.namespace": {
-					"type": "array",
-					"items": {
-						"type": "string"
-					},
-					"default": [
-						"UnityEngine"
-					],
-					"description": "导出unityapi所在的命名空间"
-				},
-				"emmylua.unity.targetPlugin": {
-					"type": "string",
-                    "enum": ["emmylua", "sumneko_lua"],
-                    "default": "emmylua",
-                    "description": "主要lua插件",
-                    "enumDescriptions": [
-                        "emmylua 0.5.5以上支持",
-						"sumneko_lua 3.5.0以上支持"
-                    ]
-				},
 				"emmylua.unity.framework": {
 					"type": "string",
-                    "enum": ["xlua", "tolua"],
-                    "default": "xlua",
-                    "description": "宿主lua框架",
-                    "enumDescriptions": [
-                        "xlua",
-						"tolua"
-                    ]
+					"enum": [
+						"XLua"
+					],
+					"default": "XLua",
+					"description": "宿主lua框架",
+					"enumDescriptions": [
+						"XLua"
+					]
 				},
-				"emmylua.unity.sln": {
+				"emmylua.unity.project_sln": {
 					"type": "string",
 					"default": "",
-					"description": "当配置该选项时，插件一定会打开该unity工程然后注入到主插件中"
+					"description": "当配置该选项时，插件一定会导出unity api, 所以"
+				},
+				"emmylua.unity.output_dir": {
+					"type": "string",
+					"default": "",
+					"description": "导出的文件路径"
 				},
 				"emmylua.unity.msbuild_properties": {
 					"type": "object",
@@ -92,7 +79,7 @@
 		"@types/glob": "^7.1.4",
 		"@types/mocha": "^9.0.0",
 		"@types/node": "14.x",
-		"@types/vscode": "^1.68.0",
+		"@types/vscode": "^1.89.0",
 		"@typescript-eslint/eslint-plugin": "^5.1.0",
 		"@typescript-eslint/parser": "^5.1.0",
 		"@vscode/test-electron": "^1.6.2",
@@ -103,6 +90,5 @@
 		"download": "^8.0.0"
 	},
 	"dependencies": {
-		"vscode-languageclient": "^8.0.1"
 	}
 }

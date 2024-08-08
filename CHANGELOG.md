@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.0.0
+
+`NEW` 重写该插件, 支持最新的vscode-emmylua
+
 ## 1.3.1
 
 `NEW` 清理错误的补全项`<global namespace>`, 重写导出的部分代码

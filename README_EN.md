@@ -1,31 +1,30 @@
 # EmmyLuaUnity
 
-## introduce
+## Introduction
 
-This plugin is a C# code hint obtained by analyzing the unity project.
+This plugin provides C# code suggestions by analyzing exported APIs from Unity projects.
 
-Compared to the previous generation EmmyLua-Unity (not uploaded to any store) plugin, there is no need to open the Unity editor, nor does it generate a whole bunch of lua api files.
+Currently supported frameworks:
+- xlua
 
-In addition to allowing the main plugin to prompt the unity api, this plugin can also prompt the comments of each C# api method/property/class/event, and also supports jumping from the lua code to the C# definition.
+## Usage
 
-## How to use
+Open the workspace with the Unity project as the root directory or open any workspace and specify the directory of the Unity project through user configuration. Then, specify the output directory.
 
-Open the workspace with the unity project as the root directory. After the main plugin is initialized, the plugin will automatically inject the unity api into the main plugin.
+Right-click on the workspace panel on the left side and select "pull unity api". Wait for a while and the API will be exported.
 
-Supports manual update of unity api. Right-click on the left workspace panel and `pull unity api` will appear. After clicking, wait for a while and the api will be updated.
+## Dependencies
 
-## dependencies
+This plugin is not self-contained and requires the same version of MSBUILD as the one used during compilation. Make sure you have `dotnet sdk 8` installed on your computer.
 
-The plug-in is based on `DOTNET SDK 7`
+## Issues
 
-## question
+If you have any issues, please visit [vscode-emmylua-unity](https://github.com/CppCXY/VSCode-EmmyLua-Unity).
 
-If you have any questions you can go to [vscode-emmylua-unity](https://github.com/CppCXY/VSCode-EmmyLua-Unity)
+## Supported Lua plugins
 
-## Supported main plugins
+Supported by vscode-emmylua.
 
-vscode-emmmylua 
+Due to inadequate support for related syntax by other plugins, they are not supported.
 
-intellij-emmmylua 
-
-sumneko_lua 
+[TODO] Supported by intellij-emmylua (https://github.com/CppCXY/EmmyLua-Unity2)
