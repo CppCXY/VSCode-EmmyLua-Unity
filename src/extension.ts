@@ -73,7 +73,7 @@ async function findSlnProject() {
 	}
 
 	const workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-	let configSln = vscode.workspace.getConfiguration().get<string>("emmylua.unity.project_workspace");
+	let configSln = vscode.workspace.getConfiguration().get<string>("emmylua.unity.project_sln");
 	if (configSln && configSln.length !== 0 && configSln.endsWith(".sln")) {
 		if (!path.isAbsolute(configSln)) {
 			if (configSln.startsWith(".")) {
