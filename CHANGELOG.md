@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.0.0
+
+`NEW` 完全重构, 使用最新的emmylua_ls作为底层支持
+`NEW` 添加tolua支持
+
 ## 2.0.1
 
 `FIX` 修复没有导出属性的BUG

@@ -7,7 +7,7 @@
 		"emmylua",
 		"unity"
 	],
-	"version": "2.0.2",
+	"version": "3.0.0",
 	"author": "CppCXY",
 	"publisher": "CppCXY",
 	"engines": {
@@ -25,44 +25,72 @@
 		"commands": [
 			{
 				"command": "emmylua.unity.pull",
-				"title": "pull unity api"
+				"title": "EmmyLua Unity: Pull Unity API",
+				"icon": "$(sync)"
+			},
+			{
+				"command": "emmylua.unity.showOutput",
+				"title": "EmmyLua Unity: Show Output",
+				"icon": "$(output)"
+			},
+			{
+				"command": "emmylua.unity.openSettings",
+				"title": "EmmyLua Unity: Open Settings",
+				"icon": "$(settings-gear)"
 			}
 		],
 		"menus": {
 			"explorer/context": [
 				{
+					"command": "emmylua.unity.pull",
+					"group": "emmylua@1"
+				}
+			],
+			"commandPalette": [
+				{
 					"command": "emmylua.unity.pull"
+				},
+				{
+					"command": "emmylua.unity.showOutput"
+				},
+				{
+					"command": "emmylua.unity.openSettings"
 				}
 			]
 		},
 		"configuration": {
-			"title": "EmmyLuaUnity",
+			"title": "EmmyLua Unity",
 			"properties": {
 				"emmylua.unity.framework": {
 					"type": "string",
 					"enum": [
-						"XLua"
+						"XLua",
+						"ToLua"
 					],
 					"default": "XLua",
-					"description": "宿主lua框架",
+					"description": "Lua framework to use (宿主Lua框架)",
 					"enumDescriptions": [
-						"XLua"
+						"Tencent's xLua framework",
+						"ToLua framework"
 					]
 				},
 				"emmylua.unity.project_sln": {
 					"type": "string",
 					"default": "",
-					"description": "当配置该选项时，插件一定会导出unity api, 所以"
+					"description": "Path to Unity project .sln file. Supports absolute path, relative path, or ${workspaceFolder} variable (Unity项目.sln文件路径，支持绝对路径、相对路径或${workspaceFolder}变量)",
+					"scope": "resource"
 				},
 				"emmylua.unity.output_dir": {
 					"type": "string",
-					"default": "",
-					"description": "导出的文件路径"
+					"default": ".EmmyLuaUnity",
+					"description": "Output directory for generated API files (API文件输出目录)",
+					"scope": "resource"
 				},
 				"emmylua.unity.msbuild_properties": {
 					"type": "object",
 					"default": {},
-					"description": "设置给msbuild的参数"
+					"description": "Additional MSBuild properties to pass to the build process (传递给MSBuild的额外属性)",
+					"scope": "resource"
 				}
 			}
 		}
