@@ -104,11 +104,12 @@
 		"lint": "eslint src --ext ts",
 		"lint:fix": "eslint src --ext ts --fix",
 		"test": "node ./out/test/runTest.js",
-		"prepare": "node ./build/prepare.js",
+		"prepare:cli": "node ./build/prepare.js",
 		"package": "vsce package",
 		"publish": "vsce publish"
 	},
 	"devDependencies": {
+		"@types/mocha": "^10.0.0",
 		"@types/node": "^20.x",
 		"@types/vscode": "^1.95.0",
 		"@typescript-eslint/eslint-plugin": "^8.0.0",
@@ -116,6 +117,8 @@
 		"@vscode/test-electron": "^2.4.0",
 		"@vscode/vsce": "^3.0.0",
 		"eslint": "^9.0.0",
+		"glob": "^11.0.0",
+		"mocha": "^10.0.0",
 		"typescript": "^5.6.0"
 	},
 	"dependencies": {

@@ -93,7 +93,7 @@ class ConfigurationManager {
 		};
 	}
 
-	static async updateConfig(key: string, value: any): Promise<void> {
+	static async updateConfig(key: string, value: unknown): Promise<void> {
 		const config = this.getConfig();
 		await config.update(key, value, vscode.ConfigurationTarget.Workspace);
 	}
@@ -135,7 +135,7 @@ class UnityProjectFinder {
 			return null;
 		}
 
-		const workspacePath = workspaceFolders[0].uri.fsPath;
+		const workspacePath = workspaceFolders[0]!.uri.fsPath;
 		const config = ConfigurationManager.getUnityConfig();
 
 		// Try configured path first
@@ -162,8 +162,14 @@ class UnityProjectFinder {
 			return selectedFile?.fsPath || null;
 		}
 
-		Logger.info(`Found Unity project: ${slnFiles[0].fsPath}`);
-		return slnFiles[0].fsPath;
+		const firstSlnFile = slnFiles[0];
+		if (!firstSlnFile) {
+			Logger.error('No .sln file found');
+			return null;
+		}
+
+		Logger.info(`Found Unity project: ${firstSlnFile.fsPath}`);
+		return firstSlnFile.fsPath;
 	}
 
 	private static async resolveConfigPath(configPath: string, workspacePath: string): Promise<string | null> {
